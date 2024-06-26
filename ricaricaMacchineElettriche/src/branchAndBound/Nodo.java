@@ -1,0 +1,175 @@
+package branchAndBound;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import progetto.RequestImpossibleException;
+import progetto.Rettangolo;
+import progetto.Soluzione;
+import progetto.TestClass;
+import utils.ordinamento.ComparatorID;
+
+public class Nodo {
+
+	ArrayList<PuntoBB> puntiRectPiazzati;
+	int indiceProssimoRectDaPiazzare;
+	double costoDisposizione = 0;
+	
+	
+	public Nodo() {}
+	
+	
+	public Nodo(ArrayList<PuntoBB> punti, int indice) {
+		puntiRectPiazzati = punti;
+		indiceProssimoRectDaPiazzare = indice;
+		costoDisposizione = costo();
+	}
+	
+	
+	public ArrayList<Nodo> espandi( RichiestaDaSistemare rectDaFissare, double costoMiglioreSoluz ) {				
+		ArrayList<Nodo> figli = new ArrayList<>();
+		
+		int inizioEstremoSinistro = rectDaFissare.minutoInizio;
+		int fineEstremoSinistro = rectDaFissare.minutoFine - rectDaFissare.minBase;
+		
+		for ( int i = inizioEstremoSinistro; i <= fineEstremoSinistro; i++ ) {
+			for ( int b = rectDaFissare.minBase; b <= rectDaFissare.maxBase; b++ ) {
+				if ( i + b <= rectDaFissare.minutoFine ) {
+					
+					double nuovaAltezza = rectDaFissare.energia/b;
+					PuntoBB inizio = new PuntoBB(rectDaFissare, i, nuovaAltezza, true);
+					PuntoBB fine = new PuntoBB(rectDaFissare, i + b, nuovaAltezza, false);
+					
+					ArrayList<PuntoBB> nuoviEstremiRect = new ArrayList<>();					
+					for ( int index = 0; index < puntiRectPiazzati.size(); index++ ) {
+						nuoviEstremiRect.add(puntiRectPiazzati.get(index).clone());
+					}
+					nuoviEstremiRect.add(inizio);
+					nuoviEstremiRect.add(fine);
+					Collections.sort(nuoviEstremiRect);
+					
+					Nodo figlio = new Nodo(nuoviEstremiRect, indiceProssimoRectDaPiazzare + 1);	
+					if( figlio.costoDisposizione < costoMiglioreSoluz ) {
+						figli.add(figlio);
+					}
+				}
+			}
+		}
+		return figli;	
+	}
+	
+	
+	public Soluzione daNodoASoluzione() throws RequestImpossibleException {		
+		ComparatorID cid = new ComparatorID();
+		Collections.sort(puntiRectPiazzati, cid);
+		ArrayList<Rettangolo> rectList = new ArrayList<>();
+		for(int i = 0; i < puntiRectPiazzati.size(); i+=2) {
+			PuntoBB p = puntiRectPiazzati.get(i);
+			PuntoBB p2 = puntiRectPiazzati.get(i+1);
+			Rettangolo r = new Rettangolo(p.richiesta.identificativoMacchina, p.richiesta.fase, p.richiesta.minutoInizio, p.richiesta.minutoFine, p.minuto, p2.minuto, p.richiesta.energia, p.richiesta.potenzaMassimaMacchina, p.richiesta.potenzaMinimaMacchina, p.richiesta.minBase, p.richiesta.maxBase);
+			rectList.add(r);
+		}
+		return new Soluzione(rectList, TestClass.massimoSfasamentoConsentito, TestClass.massimaAltezzaConsentita);
+	}
+	
+	
+	public double costo() {
+		   return altezzaMassima() + 100*sfasamento();
+	   }
+	   
+	   
+   public double altezzaMassima() {
+	   double h = 0;
+	   double maxH = 0;
+	   for(int i = 0; i < puntiRectPiazzati.size(); i++) {
+		   
+		   PuntoBB p = puntiRectPiazzati.get(i);
+		   
+		   if(p.punto_di_inizio) {
+			   h += p.altezzaRettangolo;
+			   p.sommaAltezzeNelPunto = h;
+		   }		   
+		   else {
+			   h -= p.altezzaRettangolo;
+			   p.sommaAltezzeNelPunto = h;
+		   }
+		   if(h > maxH)
+			   maxH = h;
+	   }
+	   return maxH;
+   }
+   
+   
+   public double sfasamento() {
+	   double h_fase_1 = 0;
+	   double h_fase_2 = 0;
+	   double h_fase_3 = 0;
+	   double sfasamento_massimo = 0; 
+	   
+	   for(int i = 0; i < puntiRectPiazzati.size(); i++) {
+		   
+		   PuntoBB p = puntiRectPiazzati.get(i);
+		   
+		   if(p.punto_di_inizio) {
+			   if(p.richiesta.fase == 1) {
+				   h_fase_1 += p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 2) {
+				   h_fase_2 += p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 3) {
+				   h_fase_3 += p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 0) {
+				   h_fase_1 += p.altezzaRettangolo/3;
+				   h_fase_2 += p.altezzaRettangolo/3;
+				   h_fase_3 += p.altezzaRettangolo/3;
+			   }
+		   }
+			   
+		   else {
+			   if(p.richiesta.fase == 1) {
+				   h_fase_1 -= p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 2) {
+				   h_fase_2 -= p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 3) {
+				   h_fase_3 -= p.altezzaRettangolo;
+			   }
+			   else if(p.richiesta.fase == 0) {
+				   h_fase_1 -= p.altezzaRettangolo/3;
+				   h_fase_2 -= p.altezzaRettangolo/3;
+				   h_fase_3 -= p.altezzaRettangolo/3;
+			   }
+		   }
+		   
+		   double sfasamento_fase_1_2 = Math.abs(h_fase_1 - h_fase_2);
+		   double sfasamento_fase_1_3 = Math.abs(h_fase_1 - h_fase_3);
+		   double sfasamento_fase_2_3 = Math.abs(h_fase_2 - h_fase_3);
+
+		   double sfasamento_complessivo = Math.max(sfasamento_fase_1_2, Math.max(sfasamento_fase_1_3, sfasamento_fase_2_3)); 
+		   p.sfasamentoNelPunto = sfasamento_complessivo;
+		   
+		   if(sfasamento_complessivo > sfasamento_massimo) {
+			   sfasamento_massimo = sfasamento_complessivo;
+		   }
+	   }
+	   
+	   if(sfasamento_massimo < TestClass.massimoSfasamentoConsentito) {
+		   return 0;
+	   }
+		   
+	   return sfasamento_massimo;
+   }
+	
+   
+   public void printNodo() {
+	   System.out.println("costo " + costoDisposizione);
+	   System.out.println("numero rect " + puntiRectPiazzati.size()/2);
+	   for(int i = 0; i < puntiRectPiazzati.size(); i++) {
+		   System.out.println(puntiRectPiazzati.get(i).toString());
+	   }
+   }
+   
+}

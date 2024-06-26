@@ -1,0 +1,5 @@
+{"listaRichieste":[
+{"identificativoMacchina":0,"fase":0,"energia":191.11049121376155,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":94,"minutoFine":251},
+{"identificativoMacchina":1,"fase":3,"energia":166.22386011304746,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":86,"minutoFine":131},
+{"identificativoMacchina":2,"fase":2,"energia":41.44670299576778,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480}],
+"massimaDifferenzaFasi":4.2,"massimaPotenzaReteKw":7.4}

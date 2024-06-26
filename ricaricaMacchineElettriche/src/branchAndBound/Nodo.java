@@ -74,7 +74,7 @@ public class Nodo {
 	
 	
 	public double costo() {
-		   return altezzaMassima() + 100*sfasamento();
+		   return AlgoritmoBranchAndBound.trunc( altezzaMassima() + 100*sfasamento() );
 	   }
 	   
 	   
@@ -120,11 +120,6 @@ public class Nodo {
 			   else if(p.richiesta.fase == 3) {
 				   h_fase_3 += p.altezzaRettangolo;
 			   }
-			   else if(p.richiesta.fase == 0) {
-				   h_fase_1 += p.altezzaRettangolo/3;
-				   h_fase_2 += p.altezzaRettangolo/3;
-				   h_fase_3 += p.altezzaRettangolo/3;
-			   }
 		   }
 			   
 		   else {
@@ -136,11 +131,6 @@ public class Nodo {
 			   }
 			   else if(p.richiesta.fase == 3) {
 				   h_fase_3 -= p.altezzaRettangolo;
-			   }
-			   else if(p.richiesta.fase == 0) {
-				   h_fase_1 -= p.altezzaRettangolo/3;
-				   h_fase_2 -= p.altezzaRettangolo/3;
-				   h_fase_3 -= p.altezzaRettangolo/3;
 			   }
 		   }
 		   
@@ -163,6 +153,53 @@ public class Nodo {
 	   return sfasamento_massimo;
    }
 	
+   
+   public double costoSecondario() {
+	   return AlgoritmoBranchAndBound.trunc( mediaRestringimentoRect() + contaIntersezioni() );
+   }
+   
+   
+   public double mediaRestringimentoRect() {
+	   double media = 0;
+	   
+	   for (int i = 0; i < puntiRectPiazzati.size(); i++) {
+		   PuntoBB p = puntiRectPiazzati.get(i);
+		   if( p.punto_di_inizio ) {
+			   for (int j = i+1; j < puntiRectPiazzati.size(); j++) {
+				   PuntoBB p2 = puntiRectPiazzati.get(j);
+				   if ( p2.richiesta == p.richiesta ) {
+					   media += p.richiesta.maxBase - (p2.minuto - p.minuto);
+					   break;
+				   }
+			   }
+		   }
+	   }
+	   media /= puntiRectPiazzati.size();
+	   return media;
+   }
+   
+   
+   public int contaIntersezioni() {
+	   float intersezioni = 0;
+	   for(int i = 0; i < puntiRectPiazzati.size(); i++) {
+		   PuntoBB p = puntiRectPiazzati.get(i);
+		   if(p.punto_di_inizio) {
+			   
+			  for(int j = i+1; j < puntiRectPiazzati.size();j++) {
+				  PuntoBB p2 = puntiRectPiazzati.get(j);
+				  if(p2.richiesta == p.richiesta)
+					  break;
+				  if(p2.punto_di_inizio && p2.minuto == p.minuto)
+					  intersezioni += 0.5;
+				  if(p2.punto_di_inizio && p2.minuto < p.minuto)
+					  intersezioni++;
+				  }
+			  }
+		  }
+	      
+	   return (int)intersezioni;
+   }
+   
    
    public void printNodo() {
 	   System.out.println("costo " + costoDisposizione);

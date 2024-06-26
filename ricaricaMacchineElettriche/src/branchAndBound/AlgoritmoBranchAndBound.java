@@ -11,32 +11,45 @@ public class AlgoritmoBranchAndBound {
 	public static Soluzione trovaSoluzMigliore(PianificazioneBB problema, Soluzione subottima, double costoSubottimo) throws RequestImpossibleException {
 		
 		Nodo soluzioneMigliore = null;
-		double costoMiglioreSoluzione = trunc(costoSubottimo);
+		double costoMiglioreSoluzione = costoSubottimo;
 		
 		Nodo radice = new Nodo(new ArrayList<>(), 0);
 		
 		ArrayList<Nodo> frontiera = new ArrayList<>();		//frontiera = FIFO queue
 		frontiera.add(radice);
 
-		while ( !frontiera.isEmpty() ) {					
+		int counter = 0;
+		
+		while ( !frontiera.isEmpty() ) {
+			counter++;
 			int lastNodeIndex = frontiera.size()-1;
 			Nodo nodo = frontiera.remove(lastNodeIndex);
 			
 			if( isFoglia(nodo, problema) ) {	
-				if( trunc(nodo.costoDisposizione) < trunc(costoMiglioreSoluzione) ) {
+				if( nodo.costoDisposizione < costoMiglioreSoluzione ) {
 					soluzioneMigliore = nodo;
-					costoMiglioreSoluzione = trunc(nodo.costoDisposizione);
+					costoMiglioreSoluzione = nodo.costoDisposizione;
+				}
+				else if( nodo.costoDisposizione == costoMiglioreSoluzione ) {
+					if( nodo.costoSecondario() < soluzioneMigliore.costoSecondario() ) {
+						soluzioneMigliore = nodo;
+						costoMiglioreSoluzione = nodo.costoDisposizione;
+					}
 				}
 					
 			}
 			else {
-				if( trunc(nodo.costoDisposizione) < trunc(costoMiglioreSoluzione) ) {
+				if( nodo.costoDisposizione < costoMiglioreSoluzione ) {
 					RichiestaDaSistemare r = problema.getListaRichieste().get(nodo.indiceProssimoRectDaPiazzare);
-					ArrayList<Nodo> figli = nodo.espandi(r, trunc(costoMiglioreSoluzione));
+					ArrayList<Nodo> figli = nodo.espandi(r, costoMiglioreSoluzione);
 					for(int i = 0; i < figli.size(); i++) {
 						frontiera.add(figli.get(i));
 					}
 				}
+			}
+			if(counter == 10000) {
+				counter = 0;
+				System.out.println("nodi in frontiera " + frontiera.size() + ", costo migliore " + costoMiglioreSoluzione);
 			}
 		}				
 		

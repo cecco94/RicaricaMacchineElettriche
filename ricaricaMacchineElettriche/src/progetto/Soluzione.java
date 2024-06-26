@@ -41,7 +41,7 @@ public class Soluzione {
    
    
    public double costoSoluzione() {
-	   return altezzaMassima() + 100*sfasamento();
+	   return AlgoritmoSimulatedAnnealing.trunc( altezzaMassima() + 100*sfasamento() );
    }
    
    
@@ -163,7 +163,7 @@ public class Soluzione {
 	   }
 	   
 	   mediaInnalzamentoRettangoli /= rettangoli.size();
-	   return mediaInnalzamentoRettangoli;
+	   return AlgoritmoSimulatedAnnealing.trunc( mediaInnalzamentoRettangoli );
    }
    
    

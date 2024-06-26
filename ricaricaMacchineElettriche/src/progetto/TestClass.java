@@ -1,7 +1,6 @@
 package progetto;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -10,12 +9,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import branchAndBound.AlgoritmoBranchAndBound;
 import branchAndBound.PianificazioneBB;
-import branchAndBound.RichiestaDaSistemare;
 import utils.GeneratoreIstanze;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
-
-import branchAndBound.*;
 
 
 public class TestClass {
@@ -30,11 +26,13 @@ public class TestClass {
 	//per decidere la configurazione del problema
 	public static int macchine_tranquille = 5, macchine_urgenti = 4;
 	//perchè possono esserci più versioni della stessa configurazione
-	public static int istanza = 1;
+	public static int istanza = 3;
 	
 	public static double massimoSfasamentoConsentito = 4.2;
 	public static double massimaAltezzaConsentita = 7.4;
 
+	//1_5_4, 1_3_3, 1_3_5, 1_5_4, 1_5_5, 1_6_4!  2_5_4!	 
+	
 	
 	
 	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
@@ -47,35 +45,43 @@ public class TestClass {
 		//trovo una soluz accettabile col SA
 		Soluzione soluzioneIniziale = JSON.caricaRichiestaPianificazione("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
 																 		"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
+		
+		massimoSfasamentoConsentito = soluzioneIniziale.massimoSfasamentoConsentito;
+		massimaAltezzaConsentita = soluzioneIniziale.massimaAltezzaConsentita;
+		
 		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
         visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
         
-//        Soluzione migliore_soluzione;
-//        double costo_migliore_soluzione;
-//
-//    	migliore_soluzione = AlgoritmoSimulatedAnnealing.preProcessing2(soluzioneIniziale.clone());
-//        costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
-//        visualizzaDatiIntermedi(migliore_soluzione, costo_migliore_soluzione);
-//        
-//        migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
-//        costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
-//        visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
+        Soluzione migliore_soluzione;
+        double costo_migliore_soluzione;
+
+    	migliore_soluzione = AlgoritmoSimulatedAnnealing.preProcessing2(soluzioneIniziale.clone());
+        costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
+        visualizzaDatiIntermedi(migliore_soluzione, costo_migliore_soluzione);
         
+        migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
+        costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
+        visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
         
-        System.out.println("\nààààààààààààààààààààààààààààààààààà\n");
+        System.out.println("\n ################################################## \n");
         //chiede ora al BB di prendere la soluzione subottima col suo costo e di usare quella come punto di partenza
         PianificazioneBB problema = JSON.caricaPianificazioneBB("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
 																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
         
         problema.sistemaRichieste();
-        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, soluzioneIniziale, costoSoluzioneIniziale);     		
-        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
-        visualizzaDatiFinali(soluzioneOttima, costo_soluzione_ottima);
+        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, migliore_soluzione, costo_migliore_soluzione);     		
+        if( soluzioneOttima != null) {
+	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
+	        controllaSoluzione(soluzioneOttima);
+	        visualizzaDatiOttimi(soluzioneOttima, costo_soluzione_ottima);
+        }
+        else {
+        	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
+        }
         
 	}
 
 
-	
 	private static void controllaSoluzione(Soluzione migliore_soluzione) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
 		if(migliore_soluzione.sfasamento() >  migliore_soluzione.massimoSfasamentoConsentito) {
         	throw new PlanImpossibleException("piano impossibile, troppo sbilanciamento di fase nel punto: " + migliore_soluzione.puntoMassimoSfasamento().toString());
@@ -109,6 +115,19 @@ public class TestClass {
 	private static void visualizzaDatiFinali(Soluzione migliore_soluzione, double costo_migliore_soluzione) {
 		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE FINALI");
         visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO FINALE");
+        migliore_soluzione.printSoluzione();
+        System.out.println("intersezioni " + migliore_soluzione.contaIntersezioni());
+        System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli());
+        System.out.println("costo finale " + costo_migliore_soluzione);
+        System.out.println("altezza max finale " + migliore_soluzione.altezzaMassima());
+        System.out.println("sfasamento max finale " + migliore_soluzione.sfasamento());
+		
+	}
+	
+	
+	private static void visualizzaDatiOttimi(Soluzione migliore_soluzione, double costo_migliore_soluzione) {
+		visualizzaAltezzaSoluzione(migliore_soluzione, "ALTEZZE OTTIME");
+        visualizzaSfasamentoSoluzione(migliore_soluzione, "SFASAMENTO OTTIMO");
         migliore_soluzione.printSoluzione();
         System.out.println("intersezioni " + migliore_soluzione.contaIntersezioni());
         System.out.println("media restringimento basi " + migliore_soluzione.mediaInnalzamentoRettangoli());

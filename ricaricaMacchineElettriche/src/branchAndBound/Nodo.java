@@ -31,31 +31,36 @@ public class Nodo {
 		
 		int inizioEstremoSinistro = rectDaFissare.minutoInizio;
 		int fineEstremoSinistro = rectDaFissare.minutoFine - rectDaFissare.minBase;
-		
 		for ( int i = inizioEstremoSinistro; i <= fineEstremoSinistro; i++ ) {
 			for ( int b = rectDaFissare.minBase; b <= rectDaFissare.maxBase; b++ ) {
 				if ( i + b <= rectDaFissare.minutoFine ) {
-					
-					double nuovaAltezza = rectDaFissare.energia/b;
-					PuntoBB inizio = new PuntoBB(rectDaFissare, i, nuovaAltezza, true);
-					PuntoBB fine = new PuntoBB(rectDaFissare, i + b, nuovaAltezza, false);
-					
-					ArrayList<PuntoBB> nuoviEstremiRect = new ArrayList<>();					
-					for ( int index = 0; index < puntiRectPiazzati.size(); index++ ) {
-						nuoviEstremiRect.add(puntiRectPiazzati.get(index).clone());
-					}
-					nuoviEstremiRect.add(inizio);
-					nuoviEstremiRect.add(fine);
-					Collections.sort(nuoviEstremiRect);
-					
-					Nodo figlio = new Nodo(nuoviEstremiRect, indiceProssimoRectDaPiazzare + 1);	
-					if( figlio.costoDisposizione < costoMiglioreSoluz ) {
-						figli.add(figlio);
-					}
+					Nodo figlio = creaFiglio(rectDaFissare, b, i, costoMiglioreSoluz);
+					if( figlio.costoDisposizione < costoMiglioreSoluz && !figlio.superaSfasamento()) 
+						figli.add(figlio);	
 				}
 			}
 		}
 		return figli;	
+	}
+	
+	
+	public Nodo creaFiglio(RichiestaDaSistemare rectDaFissare, int b, int i, double costoMiglioreSoluz) {
+		//dati rect piazzato
+		double nuovaAltezza = rectDaFissare.energia/b;
+		PuntoBB inizio = new PuntoBB(rectDaFissare, i, nuovaAltezza, true);
+		PuntoBB fine = new PuntoBB(rectDaFissare, i + b, nuovaAltezza, false);
+		
+		//situazione dei rect inseriti
+		ArrayList<PuntoBB> nuoviEstremiRect = new ArrayList<>();					
+		for ( int index = 0; index < puntiRectPiazzati.size(); index++ ) {
+			nuoviEstremiRect.add(puntiRectPiazzati.get(index).clone());
+		}
+		nuoviEstremiRect.add(inizio);
+		nuoviEstremiRect.add(fine);
+		Collections.sort(nuoviEstremiRect);
+		
+		Nodo figlio = new Nodo(nuoviEstremiRect, indiceProssimoRectDaPiazzare + 1);	
+		return figlio;
 	}
 	
 	
@@ -74,7 +79,7 @@ public class Nodo {
 	
 	
 	public double costo() {
-		   return AlgoritmoBranchAndBound.trunc( altezzaMassima() + 100*sfasamento() );
+		   return AlgoritmoBranchAndBound.trunc( altezzaMassima() );
 	   }
 	   
 	   
@@ -100,7 +105,7 @@ public class Nodo {
    }
    
    
-   public double sfasamento() {
+   public boolean superaSfasamento() {
 	   double h_fase_1 = 0;
 	   double h_fase_2 = 0;
 	   double h_fase_3 = 0;
@@ -147,10 +152,10 @@ public class Nodo {
 	   }
 	   
 	   if(sfasamento_massimo < TestClass.massimoSfasamentoConsentito) {
-		   return 0;
+		   return false;
 	   }
 		   
-	   return sfasamento_massimo;
+	   return true;
    }
 	
    
@@ -174,7 +179,7 @@ public class Nodo {
 			   }
 		   }
 	   }
-	   media /= puntiRectPiazzati.size();
+	   media /= (puntiRectPiazzati.size()/2);
 	   return media;
    }
    
@@ -187,7 +192,7 @@ public class Nodo {
 			   
 			  for(int j = i+1; j < puntiRectPiazzati.size();j++) {
 				  PuntoBB p2 = puntiRectPiazzati.get(j);
-				  if(p2.richiesta == p.richiesta)
+				  if(p2.richiesta == p.richiesta)	//estremo destro dello stesso rect
 					  break;
 				  if(p2.punto_di_inizio && p2.minuto == p.minuto)
 					  intersezioni += 0.5;

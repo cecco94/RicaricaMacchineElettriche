@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import branchAndBound.AlgoritmoBranchAndBound;
 import branchAndBound.PianificazioneBB;
+import branchAndBound.RichiestaDaSistemare;
 import utils.GeneratoreIstanze;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
@@ -19,22 +20,18 @@ public class TestClass {
 	public static int altezzaFinestra = 600;
 	public static int larghezzaFinestra = 600;
 
-	//li uso come fossero dei bottoni per attivare/disattivare le funzionalità
 	public static boolean newProblem = false,
 						  saveSolution = false;
 	
-	//per decidere la configurazione del problema
 	public static int macchine_tranquille = 5, macchine_urgenti = 4;
-	//perchè possono esserci più versioni della stessa configurazione
-	public static int istanza = 3;
+	public static int istanza = 1;
 	
 	public static double massimoSfasamentoConsentito = 4.2;
 	public static double massimaAltezzaConsentita = 7.4;
 
 	//1_5_4, 1_3_3, 1_3_5, 1_5_4, 1_5_5, 1_6_4!  2_5_4!	 
 	
-	
-	
+		
 	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
 		
 		if(newProblem) {			
@@ -49,8 +46,8 @@ public class TestClass {
 		massimoSfasamentoConsentito = soluzioneIniziale.massimoSfasamentoConsentito;
 		massimaAltezzaConsentita = soluzioneIniziale.massimaAltezzaConsentita;
 		
-		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
-        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
+		//double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
+        //visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
         
         Soluzione migliore_soluzione;
         double costo_migliore_soluzione;
@@ -61,15 +58,27 @@ public class TestClass {
         
         migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
         costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
-        visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
+        //visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
         
-        System.out.println("\n ################################################## \n");
+        if( !feasibleSolution(migliore_soluzione)) {
+        	//prendi i rettangoli che si intersecano nel punto critico e usa solo loro per il BB
+        }
+        
+        //////////////////////	B & B	///////////////////////////////
+         
+        System.out.println("\n ######################## B B ######################## \n");
         //chiede ora al BB di prendere la soluzione subottima col suo costo e di usare quella come punto di partenza
         PianificazioneBB problema = JSON.caricaPianificazioneBB("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
 																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
         
-        problema.sistemaRichieste();
-        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, migliore_soluzione, costo_migliore_soluzione);     		
+        System.out.println("trovo soluz ottima..");
+        problema.sistemaRichieste();        
+        
+        for( RichiestaDaSistemare r : problema.getListaRichieste()) {
+        	System.out.println( r.identificativoMacchina + ", inizio " + r.minutoInizio + ", fine " + r.minutoFine + ", minuti " + (r.minutoFine - r.minutoInizio));
+        }
+        
+        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, costo_migliore_soluzione);     		
         if( soluzioneOttima != null) {
 	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
 	        controllaSoluzione(soluzioneOttima);
@@ -77,10 +86,17 @@ public class TestClass {
         }
         else {
         	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
-        }
-        
+        }        
 	}
 
+		
+	private static boolean feasibleSolution(Soluzione soluzione) {
+		if( soluzione.altezzaMassima() < massimaAltezzaConsentita && soluzione.sfasamento() == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 
 	private static void controllaSoluzione(Soluzione migliore_soluzione) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
 		if(migliore_soluzione.sfasamento() >  migliore_soluzione.massimoSfasamentoConsentito) {
@@ -190,5 +206,10 @@ public class TestClass {
 //controllare cosa fa ogni tot (ogni volta che cambia, fatto) 
 
 
+
+
+
+
+// il BB non ha bisogno del costo aumentato quando la fase è sbagliata
 
 

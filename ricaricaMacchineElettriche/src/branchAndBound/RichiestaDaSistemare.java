@@ -5,7 +5,6 @@ public class RichiestaDaSistemare implements Comparable<RichiestaDaSistemare>{
 	public int identificativoMacchina;	
 	public int fase;	
 	public double energia, potenzaMassimaMacchina, potenzaMinimaMacchina;	
-	//intervallo temporale imigliore, da trovare
 	public int minutoInizio, minutoFine, minBase, maxBase;
 
 	
@@ -28,14 +27,15 @@ public class RichiestaDaSistemare implements Comparable<RichiestaDaSistemare>{
 	
 	@Override
 	public int compareTo(RichiestaDaSistemare r) {
-		if( minutoFine - minutoInizio < r.minutoFine - r.minutoInizio ) {
+		//first the rect with less avaible time
+		if( (minutoFine - minutoInizio) < (r.minutoFine - r.minutoInizio) ) {
 			return -1;
 		}
-		if( minutoFine - minutoInizio > r.minutoFine - r.minutoInizio ) {
+		if( (minutoFine - minutoInizio) > (r.minutoFine - r.minutoInizio) ) {
 			return 1;
 		}
-		//first the rect with less avaible time
-		if( minutoFine - minutoInizio == r.minutoFine - r.minutoInizio ) {
+		//se hanno lo stesso tempo, prima quello che si può allargare di meno
+		if( (minutoFine - minutoInizio) == (r.minutoFine - r.minutoInizio) ) {
 			if( maxBase < r.maxBase ) {
 				return -1;
 			}

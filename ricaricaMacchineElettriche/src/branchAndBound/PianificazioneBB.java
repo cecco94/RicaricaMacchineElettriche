@@ -13,14 +13,24 @@ public class PianificazioneBB {
     //serve per creare il json
     public PianificazioneBB() {}
     
+    //una volta creata l'stanza leggendo il json, bisogna ordinare le richieste per velocizzare il BB
+	public void sistemaRichieste() {
+		ArrayList<RichiestaDaSistemare> richiesteSistemate = new ArrayList<>();
+		for(RichiestaDaSistemare r : listaRichieste) {
+			r = new RichiestaDaSistemare(r.identificativoMacchina, 
+										 r.fase, 
+										 r.energia, 
+										 r.minutoInizio,
+										 r.minutoFine, 
+										 r.potenzaMassimaMacchina, 
+										 r.potenzaMinimaMacchina);
+			richiesteSistemate.add(r);
+		}
+		Collections.sort(richiesteSistemate);
+		listaRichieste = richiesteSistemate;		
+	}
     
-    public PianificazioneBB(ArrayList<RichiestaDaSistemare> r, double sfasMax, double hMax) {
-    	listaRichieste = r;
-    	massimaDifferenzaFasi = sfasMax;
-        massimaPotenzaReteKw = hMax;
-    }
-
-
+	
 	public ArrayList<RichiestaDaSistemare> getListaRichieste() {
 		return listaRichieste;
 	}
@@ -49,23 +59,6 @@ public class PianificazioneBB {
 	public void setMassimaPotenzaReteKw(double massimaPotenzaReteKw) {
 		this.massimaPotenzaReteKw = massimaPotenzaReteKw;
 	}
-
-
-	public void sistemaRichieste() {
-		ArrayList<RichiestaDaSistemare> richiesteSistemate = new ArrayList<>();
-		for(RichiestaDaSistemare r : listaRichieste) {
-			r = new RichiestaDaSistemare(r.identificativoMacchina, 
-										 r.fase, 
-										 r.energia, 
-										 r.minutoInizio,
-										 r.minutoFine, 
-										 r.potenzaMassimaMacchina, 
-										 r.potenzaMinimaMacchina);
-			richiesteSistemate.add(r);
-		}
-		Collections.sort(richiesteSistemate);
-		listaRichieste = richiesteSistemate;		
-	}
-    
+   
     
 }

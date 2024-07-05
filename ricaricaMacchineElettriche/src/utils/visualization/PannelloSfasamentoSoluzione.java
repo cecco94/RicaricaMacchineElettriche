@@ -17,8 +17,8 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	public Soluzione soluzione;
+	private int altezzaAsseX = TestClass.altezzaFinestra/2;
 
-	
 	public PannelloSfasamentoSoluzione(Soluzione sol) {
 		super();
 		soluzione = sol;
@@ -37,37 +37,42 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 	
 	private void drawAxes(Graphics2D g2) {
 		g2.setColor(Color.white);
-		int spessore = 5;
+		int lunghezzaTrattino = 5;
 		for(int x = 0; x < TestClass.larghezzaFinestra; x += 10) {
 			if (x == 480){
-				spessore = 20;
+				lunghezzaTrattino = 20;
 			}
 			else if(x % 60 == 0) {
-				spessore = 10;
+				lunghezzaTrattino = 10;
 			}
 			else {
-				spessore = 5;
+				lunghezzaTrattino = 5;
 			}
-			g2.drawLine(x, TestClass.altezzaFinestra - spessore, x, TestClass.altezzaFinestra + spessore);
+			g2.drawLine(x, altezzaAsseX - lunghezzaTrattino, x, altezzaAsseX);
 		}
 		
-		g2.drawLine(TestClass.larghezzaFinestra - 5, 0, TestClass.larghezzaFinestra - 5, TestClass.altezzaFinestra);
-		for(int y = 0; y < TestClass.altezzaFinestra; y += 10) {
+		//linea orizzontale
+		g2.drawLine(0, altezzaAsseX, TestClass.larghezzaFinestra, altezzaAsseX);			
+		
+		//linea veticale
+		g2.drawLine(TestClass.larghezzaFinestra - 5, 0, TestClass.larghezzaFinestra - 5, altezzaAsseX);
+		for(int y = 0; y < altezzaAsseX; y += 10) {
 			if(y % 40 == 0) {
-				spessore = 10;
+				lunghezzaTrattino = 10;
 			}
 			else {
-				spessore = 5;
+				lunghezzaTrattino = 5;
 			}
-			g2.drawLine(TestClass.larghezzaFinestra - spessore, y, TestClass.larghezzaFinestra + spessore, y);
+			g2.drawLine(TestClass.larghezzaFinestra - lunghezzaTrattino, y, TestClass.larghezzaFinestra + lunghezzaTrattino, y);
 		}
 		
 		//linea dello sfasamento massimo
 		g2.setColor(Color.magenta);
-		g2.drawLine(0, (int)(TestClass.altezzaFinestra - 40*TestClass.massimoSfasamentoConsentito), 800, 
-						(int)(TestClass.altezzaFinestra - 40*TestClass.massimoSfasamentoConsentito));
+		g2.drawLine(0, (int)(altezzaAsseX - 40*TestClass.massimoSfasamentoConsentito), 800, 
+						(int)(altezzaAsseX - 40*TestClass.massimoSfasamentoConsentito));
 	}
 
+	
 	private void drawSfasamentoFunction(Graphics2D g2) {
 	   	g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 		g2.setColor(Color.red);
@@ -77,7 +82,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 			Punto p = soluzione.puntiDiInizioFineRettangoli.get(i);
 			Punto p2 = soluzione.puntiDiInizioFineRettangoli.get(i + 1);
 
-			Rectangle2D.Double rect = new Rectangle2D.Double(p.x, TestClass.altezzaFinestra - p.sfasamentoNelPunto*40 - 2, p2.x - p.x, 2);  
+			Rectangle2D.Double rect = new Rectangle2D.Double(p.x, altezzaAsseX - p.sfasamentoNelPunto*40 - 2, p2.x - p.x, 2);  
 			g2.fill(rect);
 		}		
 	}
@@ -89,7 +94,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
     	 for(int i = 0; i < soluzione.rettangoli.size(); i++) {
     		 Rettangolo r = soluzione.rettangoli.get(i);
     		 
-    		 Rectangle2D.Double rect = new Rectangle2D.Double(r.margineSinistro, TestClass.altezzaFinestra - r.altezza*40, r.base, r.altezza*40);    		 
+    		 Rectangle2D.Double rect = new Rectangle2D.Double(r.margineSinistro, altezzaAsseX - r.altezza*40, r.base, r.altezza*40);    		 
     		 if((r.fase) == 1) {
     			 g2.setColor(Color.GREEN);
     		 }
@@ -104,7 +109,8 @@ public class PannelloSfasamentoSoluzione extends JPanel{
     		 }
     		 
     		 g2.fill(rect);
-    		 
+    		 g2.setColor(Color.white);
+    		 g2.draw(rect);
     	 }
     	 
      }

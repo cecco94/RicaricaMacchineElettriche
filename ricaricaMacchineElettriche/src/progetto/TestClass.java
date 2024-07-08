@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import branchAndBound.AlgoritmoBranchAndBound;
 import branchAndBound.PianificazioneBB;
-import branchAndBound.RichiestaDaSistemare;
 import utils.GeneratoreIstanze;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
@@ -23,13 +22,11 @@ public class TestClass {
 	public static boolean newProblem = false,
 						  saveSolution = false;
 	
-	public static int macchine_tranquille = 5, macchine_urgenti = 4;
-	public static int istanza = 1;
+	public static int macchine_tranquille = 9, macchine_urgenti = 2;
+	public static int istanza = 2;
 	
 	public static double massimoSfasamentoConsentito = 4.2;
 	public static double massimaAltezzaConsentita = 7.4;
-
-	//1_5_4, 1_3_3, 1_3_5, 1_5_4, 1_5_5, 1_6_4!  2_5_4!	 
 	
 		
 	public static void main(String[] args) throws RequestImpossibleException, JsonMappingException, JsonProcessingException, PlanImpossibleException {		
@@ -58,46 +55,46 @@ public class TestClass {
         
         migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
         costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
-        //visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
+        visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
         
-        if( !feasibleSolution(migliore_soluzione)) {
-        	//prendi i rettangoli che si intersecano nel punto critico e usa solo loro per il BB
-        }
         
-        //////////////////////	B & B	///////////////////////////////
-         
+        //////////////////////	B & B	///////////////////////////////        
         System.out.println("\n ######################## B B ######################## \n");
+        System.out.println("trovo soluz ottima..");
+
         //chiede ora al BB di prendere la soluzione subottima col suo costo e di usare quella come punto di partenza
         PianificazioneBB problema = JSON.caricaPianificazioneBB("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
 																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
-        
-        System.out.println("trovo soluz ottima..");
         problema.sistemaRichieste();        
         
-        for( RichiestaDaSistemare r : problema.getListaRichieste()) {
-        	System.out.println( r.identificativoMacchina + ", inizio " + r.minutoInizio + ", fine " + r.minutoFine + ", minuti " + (r.minutoFine - r.minutoInizio));
+        //quando non trova una soluz. fattibile, per non far partire il costo del BB da più di 100
+        if(migliore_soluzione.sfasamento() > 0) {
+        	costo_migliore_soluzione = massimaAltezzaConsentita;
         }
         
-        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, costo_migliore_soluzione);     		
-        if( soluzioneOttima != null) {
-	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
-	        controllaSoluzione(soluzioneOttima);
-	        visualizzaDatiOttimi(soluzioneOttima, costo_soluzione_ottima);
+        for(double i = 2; i < massimaAltezzaConsentita; i+= 0.25) {
+        	System.out.println("cerco soluz che costa meno di " + i);
+        	Soluzione sol = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, i);
+        	if(sol != null) {
+        		double costo_soluzione_ottima = sol.costoSoluzione();
+    	        controllaSoluzione(sol);
+    	        visualizzaDatiOttimi(sol, costo_soluzione_ottima);
+        		break;
+        	}
         }
-        else {
-        	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
-        }        
+            
+//        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, costo_migliore_soluzione);     		
+//        if( soluzioneOttima != null) {
+//	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
+//	        //controllaSoluzione(soluzioneOttima);
+//	        visualizzaDatiOttimi(soluzioneOttima, costo_soluzione_ottima);
+//        }
+//        else {
+//        	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
+//        }        
 	}
 
-		
-	private static boolean feasibleSolution(Soluzione soluzione) {
-		if( soluzione.altezzaMassima() < massimaAltezzaConsentita && soluzione.sfasamento() == 0) {
-			return true;
-		}
-		return false;
-	}
 	
-
 	private static void controllaSoluzione(Soluzione migliore_soluzione) throws PlanImpossibleException, JsonMappingException, JsonProcessingException {
 		if(migliore_soluzione.sfasamento() >  migliore_soluzione.massimoSfasamentoConsentito) {
         	throw new PlanImpossibleException("piano impossibile, troppo sbilanciamento di fase nel punto: " + migliore_soluzione.puntoMassimoSfasamento().toString());
@@ -154,18 +151,18 @@ public class TestClass {
 	}
 	
 
-	private static void visualizzaDatiIniziali(Soluzione soluzioneIniziale, double costoSoluzioneIniziale) {
-		visualizzaAltezzaSoluzione(soluzioneIniziale, "ALTEZZE PRIMA");
-        visualizzaSfasamentoSoluzione(soluzioneIniziale, "SFASAMENTO PRIMA");
-        soluzioneIniziale.printSoluzione();
-        System.out.println("intersezioni " + soluzioneIniziale.contaIntersezioni());
-        System.out.println("media restringimento basi " + soluzioneIniziale.mediaInnalzamentoRettangoli());
-        System.out.println("costo iniziale " + costoSoluzioneIniziale);
-        System.out.println("altezza max iniziale " + soluzioneIniziale.altezzaMassima());
-        System.out.println("sfasamento max iniziale " + soluzioneIniziale.sfasamento());
-        System.out.println(" \n" + "/////////////////////////" + "\n");
-		
-	}
+//	private static void visualizzaDatiIniziali(Soluzione soluzioneIniziale, double costoSoluzioneIniziale) {
+//		visualizzaAltezzaSoluzione(soluzioneIniziale, "ALTEZZE PRIMA");
+//        visualizzaSfasamentoSoluzione(soluzioneIniziale, "SFASAMENTO PRIMA");
+//        soluzioneIniziale.printSoluzione();
+//        System.out.println("intersezioni " + soluzioneIniziale.contaIntersezioni());
+//        System.out.println("media restringimento basi " + soluzioneIniziale.mediaInnalzamentoRettangoli());
+//        System.out.println("costo iniziale " + costoSoluzioneIniziale);
+//        System.out.println("altezza max iniziale " + soluzioneIniziale.altezzaMassima());
+//        System.out.println("sfasamento max iniziale " + soluzioneIniziale.sfasamento());
+//        System.out.println(" \n" + "/////////////////////////" + "\n");
+//		
+//	}
 	
 	
 	public static void visualizzaAltezzaSoluzione(Soluzione soluzione, String title) {
@@ -206,10 +203,11 @@ public class TestClass {
 //controllare cosa fa ogni tot (ogni volta che cambia, fatto) 
 
 
+//scrivere codice dovesi gestisce una soluzione non valida prima di mandarla al BB: if (!feasibleSolution){ prendi i rettangoli che si intersecano nel punto
+//critico e usa il BB solo su di loro. se non funziona, vuol dire che non esiste una soluzione...}
+//la criticità sta nel fatto che non so gestire quando esiste una soluzione accettabile ma il SA non la trova, perchè potrebbe esplodere il BB
+//(potrei pensare di far aumentare pian piano il valore ottimo da usare nel BB)
+//il BB non mi dà l'ottimo per quanto riguarda il costo secondario!
 
-
-
-
-// il BB non ha bisogno del costo aumentato quando la fase è sbagliata
 
 

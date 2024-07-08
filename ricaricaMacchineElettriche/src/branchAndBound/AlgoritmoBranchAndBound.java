@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import progetto.RequestImpossibleException;
 import progetto.Soluzione;
-import progetto.TestClass;
 
 public class AlgoritmoBranchAndBound {
 
@@ -19,39 +18,44 @@ public class AlgoritmoBranchAndBound {
 		ArrayList<Nodo> frontiera = new ArrayList<>();		//frontiera = FIFO queue
 		frontiera.add(radice);
 
-		int counter = 0;
+		long counter = 0;
+		int numFigliAaggiunti = 0;
 		
-		while ( !frontiera.isEmpty() ) {
+		while ( !frontiera.isEmpty() && counter <= 463000) {
 			counter++;
 			
 			//prendi l'ultimo nodo
 			int lastNodeIndex = frontiera.size()-1;
 			Nodo nodo = frontiera.remove(lastNodeIndex);
 			
-			if( isFoglia(nodo, problema) ) {	
+			if( isFoglia(nodo, problema) ) {
+				numFigliAaggiunti = 0;
 				if( nodo.costoDisposizione < costoOttimo ) {
 					soluzioneOttima = nodo;
 					costoOttimo = nodo.costoDisposizione;
 				}
-				else if( nodo.costoDisposizione == costoOttimo ) {
-					if( nodo.costoSecondario() < soluzioneOttima.costoSecondario() ) {
-						soluzioneOttima = nodo;
-						costoOttimo = nodo.costoDisposizione;
-					}
-				}
+//				else if( nodo.costoDisposizione == costoOttimo ) {
+//					if( nodo.costoSecondario() < soluzioneOttima.costoSecondario() ) {
+//						soluzioneOttima = nodo;
+//						costoOttimo = nodo.costoDisposizione;
+//					}
+//				}
 			} 
 			else {	//nodo interno
+				numFigliAaggiunti = 0;
 				if( nodo.costoDisposizione < costoOttimo ) {
-					RichiestaDaSistemare r = problema.getListaRichieste().get(nodo.indiceProssimoRectDaPiazzare);
+					RichiestaDaSistemare r = problema.getListaRichieste().get(nodo.indiceRichiestaDaPiazzare);
 					ArrayList<Nodo> figli = nodo.espandi(r, costoOttimo);
+					numFigliAaggiunti = figli.size();
 					for(int i = 0; i < figli.size(); i++) {
 						frontiera.add(figli.get(i));
 					}
 				}
 			}
-			if(counter == 1000) {
-				counter = 0;
-				System.out.println("nodi in frontiera " + frontiera.size() + " costo migliore " + costoOttimo);
+			if(counter%1000 == 0) {
+				System.out.println("nodi in frontiera " + frontiera.size() + ", costo migliore " + costoOttimo + 
+						", profondità " + nodo.indiceRichiestaDaPiazzare + ", nodi aggiunti " + numFigliAaggiunti + 
+						", su " + nodo.figliCreati + ", iteraz " + counter);
 			}
 		}				
 		
@@ -63,7 +67,7 @@ public class AlgoritmoBranchAndBound {
 
 	
 	public static boolean isFoglia(Nodo n, PianificazioneBB probl) {
-		return n.indiceProssimoRectDaPiazzare == probl.getListaRichieste().size();
+		return n.indiceRichiestaDaPiazzare == probl.getListaRichieste().size();
 	}
 	
 	

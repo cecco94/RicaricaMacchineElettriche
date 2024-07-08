@@ -1,0 +1,13 @@
+{"listaRichieste":[
+{"identificativoMacchina":0,"fase":3,"energia":104.96759503101333,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":379,"minutoFine":408},
+{"identificativoMacchina":1,"fase":2,"energia":244.18165256445508,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":203,"minutoFine":300},
+{"identificativoMacchina":2,"fase":0,"energia":209.37539245020844,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":259,"minutoFine":340},
+{"identificativoMacchina":3,"fase":1,"energia":95.77764234693467,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":201,"minutoFine":238},
+{"identificativoMacchina":4,"fase":3,"energia":185.43699317503706,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":313,"minutoFine":382},
+{"identificativoMacchina":5,"fase":2,"energia":269.64629161691056,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":212,"minutoFine":316},
+{"identificativoMacchina":6,"fase":1,"energia":53.70437872813328,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":335,"minutoFine":354},
+{"identificativoMacchina":7,"fase":1,"energia":143.69516344634724,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":278,"minutoFine":333},
+{"identificativoMacchina":8,"fase":1,"energia":116.14248490626974,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480},
+{"identificativoMacchina":9,"fase":1,"energia":189.651573294174,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480},
+{"identificativoMacchina":10,"fase":0,"energia":274.0352483652805,"potenzaMassimaMacchina":3.7,"potenzaMinimaMacchina":2.3,"minutoInizio":0,"minutoFine":480}
+],"massimaDifferenzaFasi":4.2,"massimaPotenzaReteKw":7.4}

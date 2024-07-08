@@ -17,7 +17,7 @@ public class PannelloAltezzaSoluzione extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	public Soluzione soluzione;
-	int altezzaAsseX = TestClass.altezzaFinestra/2;
+	int altezzaAsseX = 3*TestClass.altezzaFinestra/4;
 
 		
 	public PannelloAltezzaSoluzione(Soluzione sol) {

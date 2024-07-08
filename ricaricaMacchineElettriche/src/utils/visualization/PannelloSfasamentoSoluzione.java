@@ -17,7 +17,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 
 	private static final long serialVersionUID = 1L;
 	public Soluzione soluzione;
-	private int altezzaAsseX = TestClass.altezzaFinestra/2;
+	int altezzaAsseX = 3*TestClass.altezzaFinestra/4;
 
 	public PannelloSfasamentoSoluzione(Soluzione sol) {
 		super();

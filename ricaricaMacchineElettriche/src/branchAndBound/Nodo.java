@@ -12,29 +12,30 @@ import utils.ordinamento.ComparatorID;
 public class Nodo {
 
 	ArrayList<PuntoBB> puntiRectPiazzati;
-	int indiceProssimoRectDaPiazzare;
+	int indiceRichiestaDaPiazzare;
 	double costoDisposizione = 0;
-	
+	public int figliCreati;
 	
 	public Nodo() {}
 	
 	
 	public Nodo(ArrayList<PuntoBB> punti, int indice) {
 		puntiRectPiazzati = punti;
-		indiceProssimoRectDaPiazzare = indice;
+		indiceRichiestaDaPiazzare = indice;
 		costoDisposizione = costo();
+		figliCreati = 0;
 	}
 	
 	
 	public ArrayList<Nodo> espandi( RichiestaDaSistemare rectDaFissare, double costoMiglioreSoluz ) {				
 		ArrayList<Nodo> figli = new ArrayList<>();
-		
 		int inizioEstremoSinistro = rectDaFissare.minutoInizio;
 		int fineEstremoSinistro = rectDaFissare.minutoFine - rectDaFissare.minBase;
 		for ( int i = inizioEstremoSinistro; i <= fineEstremoSinistro; i++ ) {
 			for ( int b = rectDaFissare.minBase; b <= rectDaFissare.maxBase; b++ ) {
 				if ( i + b <= rectDaFissare.minutoFine ) {
 					Nodo figlio = creaFiglio(rectDaFissare, b, i, costoMiglioreSoluz);
+					figliCreati++;
 					if( figlio.costoDisposizione < costoMiglioreSoluz && !figlio.superaSfasamento()) 
 						figli.add(figlio);	
 				}
@@ -59,7 +60,7 @@ public class Nodo {
 		nuoviEstremiRect.add(fine);
 		Collections.sort(nuoviEstremiRect);
 		
-		Nodo figlio = new Nodo(nuoviEstremiRect, indiceProssimoRectDaPiazzare + 1);	
+		Nodo figlio = new Nodo(nuoviEstremiRect, indiceRichiestaDaPiazzare + 1);
 		return figlio;
 	}
 	
@@ -179,7 +180,7 @@ public class Nodo {
 			   }
 		   }
 	   }
-	   media /= (puntiRectPiazzati.size()/2);
+
 	   return media;
    }
    

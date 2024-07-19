@@ -14,7 +14,7 @@
 1_5_4 il SA trova circa 5.8 mentre il BB trova 3.45
 1_5_5 il SA trova un costo quasi uguale all'ottimo
 1_5_6 il SA trova l'ottimo
-1_6_3 il SA a volte non trova una soluzione, mentre il BB si!!!!!!!!!!!!!!!!!!!!!!
+1_6_3 il SA trova 5.9, mentre il BB 3.5
 1_6_4 il SA trova circa 5 mentre il BB trova circa 3.5 (dopo che l'ho stoppato prima)
 1_6_5 il sia il SA che il BB non trovano soluzione
 1_8_2 il SA trova circa 5 e non c'è soluz sotto 3.5
@@ -52,3 +52,14 @@
 2_9_1 il SA trova 4.6 mentre il BB trova 3.5
 2_9_2 il SA trova 4.9 e non c'è soluz sotto 2.75
 2_10_0 il SA non trova il modo di separare i rect quando sono tutti liberi, al massimo li sparpaglia bene
+
+
+
+
+
+
+se ci sono solo richieste non urgenti, creare un preprocessing che sparpaglia i rect senza sovrapporli 
+come variano i tempi e i costi in funzione della dmensione del problema e della percentuale di richeiste urgenti
+
+arrivo fino a che regge il BB con durata notte 480 
+arrivo poi fino a che regge il BB con durata notte dimezzata 

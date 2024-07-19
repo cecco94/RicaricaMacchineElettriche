@@ -108,8 +108,8 @@ public class AlgoritmoSimulatedAnnealing {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();		//in principio la soluzione migliore è quella iniziale
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-		//la temperatura iniziale è alta per avere probabilità quasi = 1 di scegliere soluzioni peggiori all'inizio
-        double temperaturaIniziale = 1000, temperaturaFinale = 0.1, temperatura = temperaturaIniziale;
+		//dati sperimentali mostrano che in realtà la probabilità diminuisce solo quando temp < 2 circa
+        double temperaturaIniziale = 10, temperaturaFinale = 0.001, temperatura = temperaturaIniziale;
         double raffreddamneto = 0.99;
      
         while(temperatura > temperaturaFinale) {
@@ -152,16 +152,17 @@ public class AlgoritmoSimulatedAnnealing {
         		}
             	
         		//se il costo è invece maggiore, accetta la soluzione con un probabilià e ^ (costoVecchiaSol - costoNuovaSol)/temperatura)
-        		else {
+        		else if ( costoNuovaSoluzione > costoSoluzioneCorrente ){
         			double probability = Math.exp( (( costoSoluzioneCorrente - costoNuovaSoluzione ) / temperatura) );
         			if(probability >= ThreadLocalRandom.current().nextDouble()) {
         				soluzioneCorrente = nuovaSoluzione;
         				costoSoluzioneCorrente = costoNuovaSoluzione;
         			}
+        			//System.out.println("t " + temperatura + ", p " + probability);
         		}	
         		
         	}//for
-        	temperatura *= raffreddamneto;
+        	temperatura = trunc(temperatura*raffreddamneto);
         	
         }//while   
         return soluzioneMigliore;
@@ -216,7 +217,7 @@ public class AlgoritmoSimulatedAnnealing {
 		Soluzione soluzioneMigliore = soluzioneCorrente.clone();
 		double costoSoluzioneMigliore = costoSoluzioneCorrente;
 		
-        double temperaturaIniziale = 1000, temperaturaFinale = 0.1, temperatura = temperaturaIniziale;
+        double temperaturaIniziale = 10, temperaturaFinale = 0.01, temperatura = temperaturaIniziale;
         double raffreddamneto = 0.9;
         while(temperatura > temperaturaFinale) {
         	for(int iterazione = 0; iterazione < 800; iterazione++) {
@@ -248,7 +249,7 @@ public class AlgoritmoSimulatedAnnealing {
         			}
         		}
         	}	
-        	temperatura *= raffreddamneto;
+        	temperatura = trunc(temperatura*raffreddamneto);
         }
         
         return soluzioneMigliore;

@@ -56,6 +56,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 		
 		//linea veticale
 		g2.drawLine(TestClass.larghezzaFinestra - 5, 0, TestClass.larghezzaFinestra - 5, altezzaAsseX);
+		
 		for(int y = 0; y < altezzaAsseX; y += 10) {
 			if(y % 40 == 0) {
 				lunghezzaTrattino = 10;
@@ -111,6 +112,14 @@ public class PannelloSfasamentoSoluzione extends JPanel{
     		 g2.fill(rect);
     		 g2.setColor(Color.white);
     		 g2.draw(rect);
+    		 
+    		//disegna id rect
+    		String id = String.valueOf(r.identificativo);
+    		g2.drawString(id, r.margineSinistro + r.base/2, (int)(altezzaAsseX - r.altezza*40 - 5));
+    	 
+    		//disegna tempo a disposizione rect
+   		 	g2.drawLine(r.margineSinistroMinimo, 20 + altezzaAsseX + i*20, r.margineDestroMassimo, 20 + altezzaAsseX + i*20);
+   		 	g2.drawString(id, r.margineDestroMassimo, 20 + altezzaAsseX + i*20);
     	 }
     	 
      }

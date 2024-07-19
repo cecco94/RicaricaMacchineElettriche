@@ -52,10 +52,10 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		margineSinistro = margineSinistroMinimo;
 		margineDestro = margineDestroMassimo;
 		
-		baseMinima = (int)(Math.ceil(area/maxAltezzaPossibile));
+		baseMinima = (int)(Math.ceil(area*60/maxAltezzaPossibile));
 		//può capitare che il tempo a disposizione sia maggiore del massimo intervallo che ci mette la macchina a caricarsi (quando abbiamo tutta la notte a disposizione)
 		//può anche capitare invece che il tempo a disposizione sia minore del massimo intervallo che ci mette la macchina a caricarsi
-		baseMassima = Math.min((int)(area/minAltezzaPossibile), margineDestroMassimo - margineSinistroMinimo);
+		baseMassima = Math.min((int)(area*60/minAltezzaPossibile), margineDestroMassimo - margineSinistroMinimo);
 		
 		//la base inizialmente è la differenza tra i due estremi più larghi, se ciò crea problemi, viene risistemato il rect
 		base = margineDestroMassimo - margineSinistroMinimo;
@@ -73,7 +73,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			margineDestro = margineSinistro + baseMassima;
 		}
 		
-		altezza = area/base;
+		altezza = (area/base)*60;
 	}	
 	
 	
@@ -112,13 +112,13 @@ public class Rettangolo implements Comparable<Rettangolo>{
 			base = margineDestro - margineSinistro;
 		}
 
-		altezza = area/base;
+		altezza = (area/base)*60;
 		//se il reect è troppo basso, 
 		if(altezza < minAltezzaPossibile) {
 			margineDestro = margineDestroMassimo;
 			margineSinistro = margineDestroMassimo - baseMassima;
 			base = baseMassima;
-			altezza = area/baseMassima;
+			altezza = (area/baseMassima)*60;
 		}
 		
 	}
@@ -244,7 +244,8 @@ public class Rettangolo implements Comparable<Rettangolo>{
 	
 	public String toString() {
 		return "id " + identificativo + ",  fase " + fase + ",  area " + area + ",  altezza " + altezza + ",  start " + margineSinistro + ",  stop " + margineDestro + 
-				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo + ",  base massima " + baseMassima + ",  base" + base;
+				",  msm " + margineSinistroMinimo + ",  mdM " + margineDestroMassimo + ",  base massima " + baseMassima + ",  base" + base + ", hmin " + minAltezzaPossibile +
+				", hmax " + maxAltezzaPossibile;
 	}
 	
 	public Richiesta fromRectToRequest() {

@@ -47,7 +47,7 @@ public class Nodo {
 	
 	public Nodo creaFiglio(RichiestaDaSistemare rectDaFissare, int b, int i, double costoMiglioreSoluz) {
 		//dati rect piazzato
-		double nuovaAltezza = rectDaFissare.energia/b;
+		double nuovaAltezza = rectDaFissare.energia*60/b;
 		PuntoBB inizio = new PuntoBB(rectDaFissare, i, nuovaAltezza, true);
 		PuntoBB fine = new PuntoBB(rectDaFissare, i + b, nuovaAltezza, false);
 		

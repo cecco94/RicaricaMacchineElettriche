@@ -20,8 +20,8 @@ public class RichiestaDaSistemare implements Comparable<RichiestaDaSistemare>{
 		potenzaMassimaMacchina = kwMax;
 		potenzaMinimaMacchina = kwMin;
 		
-		minBase = (int)( Math.ceil(energia/potenzaMassimaMacchina) );		
-		maxBase = Math.min( (int)(energia/potenzaMinimaMacchina), minutoFine - minutoInizio );		
+		minBase = (int)( Math.ceil(energia*60/potenzaMassimaMacchina) );		
+		maxBase = Math.min( (int)(energia*60/potenzaMinimaMacchina), minutoFine - minutoInizio );		
 	}
 
 	

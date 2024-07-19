@@ -25,5 +25,14 @@ public class Richiesta {
 		potenzaMassimaMacchina = kwMax;
 		potenzaMinimaMacchina = kwMin;
 	}
+
+	@Override
+	public String toString() {
+		return "Richiesta [identificativoMacchina=" + identificativoMacchina + ", fase=" + fase + ", energia=" + energia
+				+ ", potenzaMassimaMacchina=" + potenzaMassimaMacchina + ", potenzaMinimaMacchina="
+				+ potenzaMinimaMacchina + ", minutoInizio=" + minutoInizio + ", minutoFine=" + minutoFine + "]";
+	}
+	
+	
 	
 }

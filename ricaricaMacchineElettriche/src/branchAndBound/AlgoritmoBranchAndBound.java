@@ -21,7 +21,7 @@ public class AlgoritmoBranchAndBound {
 		long counter = 0;
 		int numFigliAaggiunti = 0;
 		
-		while ( !frontiera.isEmpty() && counter <= 463000) {
+		while ( !frontiera.isEmpty() && counter <= 90000) {
 			counter++;
 			
 			//prendi l'ultimo nodo

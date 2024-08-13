@@ -2,8 +2,8 @@ package utils.ordinamento;
 
 import java.util.Comparator;
 
-import progetto.Punto;
-import progetto.Rettangolo;
+import simAnn.Punto;
+import simAnn.Rettangolo;
 
 public class ComparatorTempoDiFine  implements Comparator<Rettangolo>{
 	

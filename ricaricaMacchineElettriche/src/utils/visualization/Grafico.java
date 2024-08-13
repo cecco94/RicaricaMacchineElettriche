@@ -12,7 +12,7 @@ import org.jfree.ui.RefineryUtilities;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import progetto.JSON;
+import utils.JSON;
 
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import progetto.RequestImpossibleException;
-import progetto.Rettangolo;
-import progetto.Soluzione;
 import progetto.TestClass;
+import simAnn.Rettangolo;
+import simAnn.Soluzione;
 import utils.ordinamento.ComparatorID;
 
-public class Nodo {
+public class Nodo implements Comparable<Nodo>{
 
 	ArrayList<PuntoBB> puntiRectPiazzati;
 	int indiceRichiestaDaPiazzare;
@@ -214,5 +214,16 @@ public class Nodo {
 		   System.out.println(puntiRectPiazzati.get(i).toString());
 	   }
    }
+
+	@Override
+	public int compareTo(Nodo n) {
+		if( costoDisposizione < n.costoDisposizione ) {
+			return 1;
+		}
+		if( costoDisposizione > n.costoDisposizione ) {
+			return -1;
+		}
+		return 0;
+	}
    
 }

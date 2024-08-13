@@ -1,8 +1,11 @@
-package progetto;
+package simAnn;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import progetto.Pianificazione;
+import progetto.RequestImpossibleException;
+import progetto.Richiesta;
 import utils.ordinamento.ComparatorSfasamento;
 import utils.ordinamento.ComparatorSommaAltezze;
 import utils.ordinamento.ComparatorTempoDiInizio;

@@ -9,9 +9,9 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 
 import progetto.TestClass;
-import progetto.Punto;
-import progetto.Rettangolo;
-import progetto.Soluzione;
+import simAnn.Punto;
+import simAnn.Rettangolo;
+import simAnn.Soluzione;
 
 public class PannelloSfasamentoSoluzione extends JPanel{
 
@@ -64,7 +64,7 @@ public class PannelloSfasamentoSoluzione extends JPanel{
 			else {
 				lunghezzaTrattino = 5;
 			}
-			g2.drawLine(TestClass.larghezzaFinestra - lunghezzaTrattino, y, TestClass.larghezzaFinestra + lunghezzaTrattino, y);
+			g2.drawLine(TestClass.larghezzaFinestra - lunghezzaTrattino, y+10, TestClass.larghezzaFinestra + lunghezzaTrattino, y+10);
 		}
 		
 		//linea dello sfasamento massimo

@@ -2,10 +2,12 @@ package branchAndBound;
 
 public class RichiestaDaSistemare implements Comparable<RichiestaDaSistemare>{
 
-	public int identificativoMacchina;	
-	public int fase;	
-	public double energia, potenzaMassimaMacchina, potenzaMinimaMacchina;	
-	public int minutoInizio, minutoFine, minBase, maxBase;
+	public int identificativoMacchina;
+	public int fase;
+	public double energia, potenzaMassimaMacchina, potenzaMinimaMacchina;
+	//intervallo temporale imigliore, da trovare. inizialmente sono gli estremi massimi
+	public int minutoInizio, minutoFine;
+	public int minBase, maxBase;
 
 	
 	public RichiestaDaSistemare() {}

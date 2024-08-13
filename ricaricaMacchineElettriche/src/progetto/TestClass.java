@@ -9,7 +9,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import branchAndBound.AlgoritmoBranchAndBound;
 import branchAndBound.PianificazioneBB;
+import simAnn.AlgoritmoSimulatedAnnealing;
+import simAnn.Soluzione;
 import utils.GeneratoreIstanze;
+import utils.JSON;
 import utils.visualization.PannelloAltezzaSoluzione;
 import utils.visualization.PannelloSfasamentoSoluzione;
 
@@ -22,8 +25,8 @@ public class TestClass {
 	public static boolean newProblem = false,
 						  saveSolution = false;
 	
-	public static int macchine_tranquille = 1, macchine_urgenti = 2;
-	public static int istanza = 1;
+	public static int macchine_tranquille = 8, macchine_urgenti = 0;
+	public static int istanza = 10;
 	
 	public static double massimoSfasamentoConsentito = 6; //4.2;
 	public static double massimaAltezzaConsentita = 11; //7.4;
@@ -44,7 +47,7 @@ public class TestClass {
 		massimaAltezzaConsentita = soluzioneIniziale.massimaAltezzaConsentita;
 		
 //		double costoSoluzioneIniziale = soluzioneIniziale.costoSoluzione();
-//        visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
+//      visualizzaDatiIniziali(soluzioneIniziale, costoSoluzioneIniziale); 
         
         Soluzione migliore_soluzione;
         double costo_migliore_soluzione;
@@ -53,45 +56,51 @@ public class TestClass {
         costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
         visualizzaDatiIntermedi(migliore_soluzione, costo_migliore_soluzione);
         
+        long start = System.currentTimeMillis();
         migliore_soluzione = AlgoritmoSimulatedAnnealing.simulatedAnnealing(migliore_soluzione);
+        long durata = System.currentTimeMillis() - start;
+        System.out.println("tempo SA " + durata);
         costo_migliore_soluzione = migliore_soluzione.costoSoluzione();
         visualizzaDatiFinali(migliore_soluzione, costo_migliore_soluzione);
-        
+		
         
         //////////////////////	B & B	///////////////////////////////        
-        System.out.println("\n ######################## B B ######################## \n");
-        System.out.println("trovo soluz ottima..");
-
-        //chiede ora al BB di prendere la soluzione subottima col suo costo e di usare quella come punto di partenza
-        PianificazioneBB problema = JSON.caricaPianificazioneBB("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
-																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
-        problema.sistemaRichieste();        
-        
-        //quando non trova una soluz. fattibile, per non far partire il costo del BB da più di 100
-        if(migliore_soluzione.sfasamento() > 0) {
-        	costo_migliore_soluzione = massimaAltezzaConsentita;
-        }
-        
-//        for(double i = 2; i < massimaAltezzaConsentita; i+= 0.25) {
-//        	System.out.println("cerco soluz che costa meno di " + i);
-//        	Soluzione sol = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, i);
-//        	if(sol != null) {
-//        		double costo_soluzione_ottima = sol.costoSoluzione();
-//    	        controllaSoluzione(sol);
-//    	        visualizzaDatiOttimi(sol, costo_soluzione_ottima);
-//        		break;
-//        	}
+//        System.out.println("\n ######################## B B ######################## \n");
+//        System.out.println("trovo soluz ottima..");
+//
+//        //chiede ora al BB di prendere la soluzione subottima col suo costo e di usare quella come punto di partenza
+//        PianificazioneBB problema = JSON.caricaPianificazioneBB("data/istanze/" + istanza + "_problema_con_"+macchine_tranquille+
+//																"_macchine_tranquille_"+macchine_urgenti+"_macchine_urgenti.json");
+//        problema.sistemaRichieste();        
+//        
+//        //quando non trova una soluz. fattibile, per non far partire il costo del BB da più di 100
+//        if(migliore_soluzione.sfasamento() > 0) {
+//        	costo_migliore_soluzione = massimaAltezzaConsentita;
 //        }
-            
-        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, costo_migliore_soluzione);     		
-        if( soluzioneOttima != null) {
-	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
-	        //controllaSoluzione(soluzioneOttima);
-	        visualizzaDatiOttimi(soluzioneOttima, costo_soluzione_ottima);
-        }
-        else {
-        	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
-        }        
+//        
+////        for(double i = 2; i < massimaAltezzaConsentita; i+= 0.25) {
+////        	System.out.println("cerco soluz che costa meno di " + i);
+////        	Soluzione sol = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, i);
+////        	if(sol != null) {
+////        		double costo_soluzione_ottima = sol.costoSoluzione();
+////    	        controllaSoluzione(sol);
+////    	        visualizzaDatiOttimi(sol, costo_soluzione_ottima);
+////        		break;
+////        	}
+////        }
+//        
+//        start = System.currentTimeMillis();
+//        Soluzione soluzioneOttima = AlgoritmoBranchAndBound.trovaSoluzMigliore(problema, costo_migliore_soluzione);   
+//        durata = System.currentTimeMillis() - start;
+//        System.out.println("tempo BB " + durata);
+//        if( soluzioneOttima != null) {
+//	        double costo_soluzione_ottima = soluzioneOttima.costoSoluzione();
+//	        //controllaSoluzione(soluzioneOttima);
+//	        visualizzaDatiOttimi(soluzioneOttima, costo_soluzione_ottima);
+//        }
+//        else {
+//        	System.out.println("non ho trovato nessuna soluzione migliore della subottima");
+//        }  
 	}
 
 	
@@ -134,7 +143,9 @@ public class TestClass {
         System.out.println("costo finale " + costo_migliore_soluzione);
         System.out.println("altezza max finale " + migliore_soluzione.altezzaMassima());
         System.out.println("sfasamento max finale " + migliore_soluzione.sfasamento());
-		
+		System.out.println("max sfasamento " + massimoSfasamentoConsentito);
+		System.out.println("max altezza " + massimaAltezzaConsentita);
+
 	}
 	
 	
@@ -203,11 +214,18 @@ public class TestClass {
 //controllare cosa fa ogni tot (ogni volta che cambia, fatto) 
 
 
-//scrivere codice dovesi gestisce una soluzione non valida prima di mandarla al BB: if (!feasibleSolution){ prendi i rettangoli che si intersecano nel punto
+//scrivere codice dove si gestisce una soluzione non valida prima di mandarla al BB: if (!feasibleSolution){ prendi i rettangoli che si intersecano nel punto
 //critico e usa il BB solo su di loro. se non funziona, vuol dire che non esiste una soluzione...}
 //la criticità sta nel fatto che non so gestire quando esiste una soluzione accettabile ma il SA non la trova, perchè potrebbe esplodere il BB
 //(potrei pensare di far aumentare pian piano il valore ottimo da usare nel BB)
 //(il BB non mi dà l'ottimo per quanto riguarda il costo secondario!) shhh
 
 
+//10*(n/p) Vn in (4, 20), Vp in (0, 25, 50, 75) prendi tempo e valore
 
+
+
+
+
+
+//potrei far discendere Soluzione e PianoBB da Piano e far discendere da Richiesta RichiestaDaSistemare e Rettangolo

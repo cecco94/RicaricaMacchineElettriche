@@ -8,11 +8,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import progetto.Pianificazione;
-import progetto.JSON;
 import progetto.RequestImpossibleException;
-import progetto.Rettangolo;
 import progetto.Richiesta;
-import progetto.Soluzione;
+import simAnn.Rettangolo;
+import simAnn.Soluzione;
 
 
 
@@ -53,20 +52,23 @@ public class GeneratoreIstanze {
 		Random rand = new Random();	
 		
 		int fase = rand.nextInt(4);		//fase = 0 dignifica che la macchina usa tutte e tre le fasi	
-		double energia_kwh = rand.nextDouble(4, 16); //la capacità di una batteria è al massimo 101 kwh e minimo 40kwh	
-		double maxPow = rand.nextDouble(potenza_minima, potenza_massima);
-		double minPow = rand.nextDouble(potenza_minima, maxPow/2);
-
+		double energia_kwh = 0; //la capacità di una batteria è al massimo 101 kwh e minimo 40kwh	
+		double maxPow = 0;
+		double minPow = 0;
+		
 		//a caso crea richieste con tempi minori di tutta la notte, per simulare richieste più urgenti
 		if(numero_richieste_urgenti > 0) {
+			energia_kwh = rand.nextDouble(4, 9);
+			maxPow = rand.nextDouble(3.5, 9.0);
+			minPow = rand.nextDouble(potenza_minima, 3.4);
 			
 			int base_massima = (int)(energia_kwh*60/minPow);	
-			int base_minima = (int)(Math.ceil(energia_kwh*60/maxPow));
-
-			int base = rand.nextInt(base_minima, base_massima);			//prende come base una qualsiasi base fattibile
+			//int base_minima = (int)(Math.ceil(energia_kwh*60/maxPow));
 			
-			int inizio = rand.nextInt(fine_nottata - base);		//prende come punto di inizio un qualsiasi momento fattibile della nottata
-			int fine =  inizio + base; 
+			//int base = rand.nextInt(base_minima, base_massima);			//prende come base una qualsiasi base fattibile
+			
+			int inizio = rand.nextInt(0, fine_nottata - base_massima - 5);		//prende come punto di inizio un qualsiasi momento fattibile della nottata
+			int fine =  inizio + base_massima; 
 			
 			numero_richieste_urgenti--;
 			Richiesta r = new Richiesta(id, fase, energia_kwh, inizio, fine,  maxPow, minPow);
@@ -75,6 +77,10 @@ public class GeneratoreIstanze {
 		}
 		
 		//crea richieste con tempo a disposizione = tutta la notte
+		energia_kwh = rand.nextDouble(4, 15); //la capacità di una batteria è al massimo 101 kwh e minimo 40kwh	
+		maxPow = rand.nextDouble(potenza_minima, potenza_massima);
+		minPow = potenza_minima; //rand.nextDouble(potenza_minima, maxPow/2);
+		
 		Richiesta r = new Richiesta(id, fase, energia_kwh, inizio_nottata, fine_nottata, maxPow, minPow);
 		//System.out.println(r.toString());
 		return r;

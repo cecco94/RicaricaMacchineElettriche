@@ -1,4 +1,4 @@
-package progetto;
+package utils;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,6 +6,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import branchAndBound.PianificazioneBB;
+import progetto.Pianificazione;
+import progetto.RequestImpossibleException;
+import progetto.Richiesta;
+import simAnn.Rettangolo;
+import simAnn.Soluzione;
 import utils.visualization.Dataset;
 
 import java.io.File;

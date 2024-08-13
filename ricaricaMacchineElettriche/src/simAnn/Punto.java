@@ -1,4 +1,4 @@
-package progetto;
+package simAnn;
 
 import lombok.Data;
 

@@ -1,5 +1,8 @@
-package progetto;
+package simAnn;
 import java.util.Random;
+
+import progetto.RequestImpossibleException;
+import progetto.Richiesta;
 
 public class Rettangolo implements Comparable<Rettangolo>{
 	
@@ -62,7 +65,7 @@ public class Rettangolo implements Comparable<Rettangolo>{
 		
 		//se il rect con base massima è troppo stretto, non possiamo che riportare un errore
 		if(base < baseMinima) {
-			throw new RequestImpossibleException("troppo poco tempo per caricare il veicolo, area " + a + " base " + base + " altezza " + (area/base));
+			throw new RequestImpossibleException("troppo poco tempo per caricare il veicolo. id " + id + ", area " + a + " base " + base + " altezza " + (area*60/base));
 		}
 		
 		//se il rect con base massima è troppo largo, accorciamo il margine destro fino al valore di base massimo ammissibile

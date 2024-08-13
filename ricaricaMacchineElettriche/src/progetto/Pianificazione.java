@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Pianificazione {
-    private ArrayList<Richiesta> listaRichieste;
+    protected ArrayList<Richiesta> listaRichieste;
     private double massimaDifferenzaFasi = 4.2;
     private double massimaPotenzaReteKw = 7.4;
     

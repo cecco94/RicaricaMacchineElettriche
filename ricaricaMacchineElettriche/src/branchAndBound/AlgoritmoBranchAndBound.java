@@ -1,15 +1,17 @@
 package branchAndBound;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import progetto.RequestImpossibleException;
-import progetto.Soluzione;
+import simAnn.Soluzione;
 
 public class AlgoritmoBranchAndBound {
 
 	
 	public static Soluzione trovaSoluzMigliore(PianificazioneBB problema, double costoSubottimo) throws RequestImpossibleException {
-		
+        long start = System.currentTimeMillis();
+        
 		Nodo soluzioneOttima = null;
 		double costoOttimo = costoSubottimo;
 		
@@ -21,12 +23,13 @@ public class AlgoritmoBranchAndBound {
 		long counter = 0;
 		int numFigliAaggiunti = 0;
 		
-		while ( !frontiera.isEmpty() && counter <= 90000) {
+		while ( !frontiera.isEmpty() && counter <= 2300000) {
 			counter++;
 			
 			//prendi l'ultimo nodo
 			int lastNodeIndex = frontiera.size()-1;
 			Nodo nodo = frontiera.remove(lastNodeIndex);
+			//Collections.sort(frontiera);
 			
 			if( isFoglia(nodo, problema) ) {
 				numFigliAaggiunti = 0;
@@ -52,12 +55,16 @@ public class AlgoritmoBranchAndBound {
 					}
 				}
 			}
+						
 			if(counter%1000 == 0) {
+				if( !isFoglia(nodo, problema)) {
 				System.out.println("nodi in frontiera " + frontiera.size() + ", costo migliore " + costoOttimo + 
-						", profondità " + nodo.indiceRichiestaDaPiazzare + ", nodi aggiunti " + numFigliAaggiunti + 
-						", su " + nodo.figliCreati + ", iteraz " + counter);
+						", richiesta " + problema.getListaRichieste().get(nodo.indiceRichiestaDaPiazzare).identificativoMacchina + ", nodi aggiunti " + numFigliAaggiunti + ", su " + nodo.figliCreati + ", iteraz " + counter +  ", durata " + (System.currentTimeMillis() - start) );
+			
+				}
 			}
 		}				
+		
 		
 		if(soluzioneOttima != null) {
 			return soluzioneOttima.daNodoASoluzione();

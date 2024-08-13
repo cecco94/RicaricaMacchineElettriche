@@ -1,6 +1,8 @@
-package progetto;
+package simAnn;
 
 import java.util.concurrent.ThreadLocalRandom;
+
+import progetto.RequestImpossibleException;
 
 
 public class AlgoritmoSimulatedAnnealing {

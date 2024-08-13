@@ -1,14 +1,14 @@
 package progetto;
 
+import lombok.Data;
+
+@Data
 public class Richiesta {
 
 	public int identificativoMacchina;
-	
 	public int fase;
-	
 	public double energia, potenzaMassimaMacchina, potenzaMinimaMacchina;
-	
-	//intervallo temporale imigliore, da trovare
+	//intervallo temporale imigliore, da trovare. inizialmente sono gli estremi massimi
 	public int minutoInizio, minutoFine;
 	
 	
@@ -32,7 +32,5 @@ public class Richiesta {
 				+ ", potenzaMassimaMacchina=" + potenzaMassimaMacchina + ", potenzaMinimaMacchina="
 				+ potenzaMinimaMacchina + ", minutoInizio=" + minutoInizio + ", minutoFine=" + minutoFine + "]";
 	}
-	
-	
 	
 }

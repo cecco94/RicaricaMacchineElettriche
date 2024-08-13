@@ -1,7 +1,7 @@
 package utils.ordinamento;
 import java.util.Comparator;
 
-import progetto.Punto;
+import simAnn.Punto;
 
 public class ComparatorSommaAltezze implements Comparator<Punto>{
 //mi serve per trovare velocemente i punti dei rect dove la somma delle altezze è maggiore

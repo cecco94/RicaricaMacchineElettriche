@@ -3,7 +3,9 @@ package branchAndBound;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import lombok.Data;
 
+@Data
 public class PianificazioneBB {
     private ArrayList<RichiestaDaSistemare> listaRichieste;
     private double massimaDifferenzaFasi = 4.2;
@@ -28,37 +30,6 @@ public class PianificazioneBB {
 		}
 		Collections.sort(richiesteSistemate);
 		listaRichieste = richiesteSistemate;		
-	}
-    
-	
-	public ArrayList<RichiestaDaSistemare> getListaRichieste() {
-		return listaRichieste;
-	}
-
-
-	public void setListaRichieste(ArrayList<RichiestaDaSistemare> listaRichieste) {
-		this.listaRichieste = listaRichieste;
-	}
-
-
-	public double getMassimaDifferenzaFasi() {
-		return massimaDifferenzaFasi;
-	}
-
-
-	public void setMassimaDifferenzaFasi(double massimaDifferenzaFasi) {
-		this.massimaDifferenzaFasi = massimaDifferenzaFasi;
-	}
-
-
-	public double getMassimaPotenzaReteKw() {
-		return massimaPotenzaReteKw;
-	}
-
-
-	public void setMassimaPotenzaReteKw(double massimaPotenzaReteKw) {
-		this.massimaPotenzaReteKw = massimaPotenzaReteKw;
-	}
-   
+	}  
     
 }

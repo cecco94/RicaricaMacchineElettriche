@@ -2,7 +2,7 @@ package utils.ordinamento;
 
 import java.util.Comparator;
 
-import progetto.Punto;
+import simAnn.Punto;
 
 public class ComparatorTempoDiInizio implements Comparator<Punto>{
 //mi serve per ordinare i punti dei rect in ordine di tempo

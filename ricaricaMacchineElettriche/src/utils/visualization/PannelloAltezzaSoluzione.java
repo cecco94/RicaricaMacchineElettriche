@@ -7,10 +7,10 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
-import progetto.Punto;
-import progetto.Rettangolo;
-import progetto.Soluzione;
 import progetto.TestClass;
+import simAnn.Punto;
+import simAnn.Rettangolo;
+import simAnn.Soluzione;
 
 
 public class PannelloAltezzaSoluzione extends JPanel {
@@ -66,7 +66,7 @@ public class PannelloAltezzaSoluzione extends JPanel {
 			else {
 				lunghezzaTrattino = 5;
 			}
-			g2.drawLine(TestClass.larghezzaFinestra - lunghezzaTrattino, y, TestClass.larghezzaFinestra + lunghezzaTrattino, y);
+			g2.drawLine(TestClass.larghezzaFinestra - lunghezzaTrattino, y+10, TestClass.larghezzaFinestra + lunghezzaTrattino, y+10);
 		}
 	}
 

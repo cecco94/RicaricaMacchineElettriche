@@ -2,7 +2,7 @@ package utils.ordinamento;
 
 import java.util.Comparator;
 
-import progetto.Punto;
+import simAnn.Punto;
 
 public class ComparatorSfasamento implements Comparator<Punto>{
 
